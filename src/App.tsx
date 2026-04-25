@@ -132,6 +132,52 @@ function App() {
 
   const progress = (completedChapters.length / chapters.length) * 100;
 
+  const quickStartActions = [
+    {
+      id: 'content',
+      title: 'Start with Core Concepts',
+      description: 'Read the essentials first before diving deeper.',
+      icon: BookMarked
+    },
+    {
+      id: 'diagrams',
+      title: 'Learn Visually',
+      description: 'Use diagrams and comparisons to build intuition.',
+      icon: Network
+    },
+    {
+      id: 'realworld',
+      title: 'Apply in Real Systems',
+      description: 'See where each concept appears in engineering work.',
+      icon: Briefcase
+    }
+  ] as const;
+
+  const tabSections = [
+    {
+      title: 'Core Learning',
+      description: 'Recommended order for first pass',
+      tabs: [
+        { value: 'content', label: 'Content', icon: BookMarked },
+        { value: 'detailed', label: 'Deep Dive', icon: Layers },
+        { value: 'keyterms', label: 'Key Terms', icon: FileText }
+      ]
+    },
+    {
+      title: 'Practice & Reference',
+      description: 'Use as needed for reinforcement',
+      tabs: [
+        { value: 'diagrams', label: 'Diagrams', icon: Network },
+        { value: 'comparisons', label: 'Compare', icon: ArrowRight },
+        { value: 'compdiagrams', label: 'Visual Compare', icon: GitCompare },
+        { value: 'realworld', label: 'Real-World', icon: Briefcase },
+        { value: 'code', label: 'Go Code', icon: Code },
+        { value: 'formulas', label: 'Formulas', icon: Calculator },
+        { value: 'images', label: 'Images', icon: Eye }
+      ]
+    }
+  ] as const;
+
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Sidebar */}
@@ -329,48 +375,57 @@ function App() {
             />
           ) : !showQuiz ? (
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="mb-6 flex-wrap h-auto">
-                <TabsTrigger value="content" className="gap-2">
-                  <BookMarked className="h-4 w-4" />
-                  Content
-                </TabsTrigger>
-                <TabsTrigger value="detailed" className="gap-2">
-                  <Layers className="h-4 w-4" />
-                  Deep Dive
-                </TabsTrigger>
-                <TabsTrigger value="diagrams" className="gap-2">
-                  <Network className="h-4 w-4" />
-                  Diagrams
-                </TabsTrigger>
-                <TabsTrigger value="keyterms" className="gap-2">
-                  <FileText className="h-4 w-4" />
-                  Key Terms
-                </TabsTrigger>
-                <TabsTrigger value="formulas" className="gap-2">
-                  <Calculator className="h-4 w-4" />
-                  Formulas
-                </TabsTrigger>
-                <TabsTrigger value="images" className="gap-2">
-                  <Eye className="h-4 w-4" />
-                  Images
-                </TabsTrigger>
-                <TabsTrigger value="code" className="gap-2">
-                  <Code className="h-4 w-4" />
-                  Go Code
-                </TabsTrigger>
-                <TabsTrigger value="comparisons" className="gap-2">
-                  <ArrowRight className="h-4 w-4" />
-                  Compare
-                </TabsTrigger>
-                <TabsTrigger value="realworld" className="gap-2">
-                  <Briefcase className="h-4 w-4" />
-                  Real-World
-                </TabsTrigger>
-                <TabsTrigger value="compdiagrams" className="gap-2">
-                  <GitCompare className="h-4 w-4" />
-                  Visual Compare
-                </TabsTrigger>
-              </TabsList>
+              <Card className="mb-6 border-blue-100">
+                <CardContent className="p-4 md:p-5 space-y-4">
+                  <div>
+                    <p className="text-sm font-semibold text-blue-800">Quick Start Paths</p>
+                    <p className="text-xs text-slate-500">Pick one path and avoid jumping between too many controls.</p>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {quickStartActions.map((action) => {
+                      const ActionIcon = action.icon;
+                      return (
+                        <button
+                          key={action.id}
+                          onClick={() => setActiveTab(action.id)}
+                          className={cn(
+                            "text-left rounded-lg border p-3 transition-colors",
+                            activeTab === action.id
+                              ? "border-blue-300 bg-blue-50"
+                              : "border-slate-200 hover:border-blue-200 hover:bg-slate-50"
+                          )}
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <ActionIcon className="h-4 w-4 text-blue-600" />
+                            <p className="text-sm font-semibold text-slate-900">{action.title}</p>
+                          </div>
+                          <p className="text-xs text-slate-600">{action.description}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="mb-6 space-y-3">
+                {tabSections.map((section) => (
+                  <div key={section.title}>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1">{section.title}</p>
+                    <p className="text-xs text-slate-400 mb-2">{section.description}</p>
+                    <TabsList className="flex-wrap h-auto justify-start">
+                      {section.tabs.map((tab) => {
+                        const TabIcon = tab.icon;
+                        return (
+                          <TabsTrigger key={tab.value} value={tab.value} className="gap-2">
+                            <TabIcon className="h-4 w-4" />
+                            {tab.label}
+                          </TabsTrigger>
+                        );
+                      })}
+                    </TabsList>
+                  </div>
+                ))}
+              </div>
 
               {/* Content Tab - Basic Overview */}
               <TabsContent value="content" className="space-y-6">
